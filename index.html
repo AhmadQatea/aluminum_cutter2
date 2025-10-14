@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📐</text></svg>">
+    <title>حاسبة تقطيع ألواح الفايبر</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1a2a6c 0%, #2a5298 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            opacity: 0.95;
+            font-size: 1em;
+            font-weight: 300;
+        }
+        
+        .main-content {
+            padding: 25px;
+        }
+        
+        .panel {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .panel-title {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 0.9em;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            border-color: #1a2a6c;
+            box-shadow: 0 0 0 3px rgba(26, 42, 108, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #1a2a6c 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(26, 42, 108, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(26, 42, 108, 0.4);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #ed64a6 0%, #ed8936 100%);
+            box-shadow: 0 4px 15px rgba(237, 100, 166, 0.3);
+        }
+        
+        .btn-danger:hover {
+            box-shadow: 0 8px 25px rgba(237, 100, 166, 0.4);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+        }
+        
+        .btn-success:hover {
+            box-shadow: 0 8px 25px rgba(72, 187, 120, 0.4);
+        }
+        
+        .pieces-list {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 10px;
+            max-height: 250px;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .piece-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            transition: background-color 0.3s ease;
+        }
+        
+        .piece-item:hover {
+            background: rgba(26, 42, 108, 0.05);
+            border-radius: 8px;
+        }
+        
+        .piece-item:last-child {
+            border-bottom: none;
+        }
+        
+        .results-section {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+        
+        .sheet-result {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: transform 0.3s ease;
+        }
+        
+        .sheet-result:hover {
+            transform: translateY(-2px);
+        }
+        
+        .sheet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #1a2a6c;
+        }
+        
+        .cuts-display {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .cut-piece {
+            background: linear-gradient(135deg, #1a2a6c 0%, #2a5298 100%);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85em;
+            box-shadow: 0 2px 8px rgba(26, 42, 108, 0.3);
+        }
+        
+        .waste {
+            background: linear-gradient(135deg, #ed64a6 0%, #ed8936 100%);
+        }
+        
+        .efficient {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        }
+        
+        .summary {
+            background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .buttons-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .efficiency-badge {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(72, 187, 120, 0.3);
+        }
+        
+        .sheet-visualization {
+            margin-top: 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+            background: white;
+            position: relative;
+            height: 200px;
+        }
+        
+        .sheet-base {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: #f7fafc;
+        }
+        
+        .cut-rectangle {
+            position: absolute;
+            border: 2px solid #1a2a6c;
+            background: rgba(26, 42, 108, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7em;
+            font-weight: 600;
+            color: #1a2a6c;
+            overflow: hidden;
+        }
+        
+        .waste-area {
+            position: absolute;
+            border: 1px dashed #e53e3e;
+            background: rgba(229, 62, 62, 0.1);
+        }
+        
+        /* تنسيقات الفوتر المصغر */
+        footer {
+            background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            margin-top: auto;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .designer-info {
+            font-size: 13px;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+        
+        .contact-button {
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 18px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(37, 211, 102, 0.3);
+            font-size: 12px;
+        }
+        
+        .contact-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+        }
+        
+        .copyright {
+            font-size: 11px;
+            opacity: 0.8;
+            color: #cbd5e0;
+            line-height: 1.4;
+        }
+        
+        .footer-divider {
+            width: 50%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #1a2a6c, transparent);
+            margin: 5px 0;
+        }
+        
+        .app-switcher {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+        
+        .app-btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .app-btn.active {
+            background: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .app-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .buttons-group {
+                flex-direction: column;
+            }
+            
+            .footer-content {
+                gap: 8px;
+            }
+            
+            .designer-info {
+                font-size: 12px;
+            }
+            
+            .contact-button {
+                padding: 6px 12px;
+                font-size: 11px;
+            }
+            
+            .copyright {
+                font-size: 10px;
+            }
+            
+            h1 {
+                font-size: 1.6em;
+            }
+            
+            .main-content {
+                padding: 15px;
+            }
+            
+            .panel {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-switcher">
+        <a href="index.html" class="app-btn">حاسبة الألمنيوم</a>
+        <a href="#" class="app-btn active">حاسبة الفايبر</a>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>📐 حاسبة تقطيع ألواح الفايبر</h1>
+            <p class="subtitle">نظام الحساب الذكي لتقطيع الألواح - أقل هدر، أعلى كفاءة</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="panel">
+                <div class="panel-title">📏 مواصفات اللوح الأساسي</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="sheetLength">طول اللوح (سم):</label>
+                        <input type="number" id="sheetLength" value="280" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="sheetWidth">عرض اللوح (سم):</label>
+                        <input type="number" id="sheetWidth" value="130" min="1">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="panel">
+                <div class="panel-title">✂️ إضافة القطع المطلوبة</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="pieceLength">طول القطعة (سم):</label>
+                        <input type="number" id="pieceLength" step="1" min="1" placeholder="أدخل الطول">
+                    </div>
+                    <div class="form-group">
+                        <label for="pieceWidth">عرض القطعة (سم):</label>
+                        <input type="number" id="pieceWidth" step="1" min="1" placeholder="أدخل العرض">
+                    </div>
+                    <div class="form-group">
+                        <label for="pieceQuantity">الكمية:</label>
+                        <input type="number" id="pieceQuantity" min="1" value="1" placeholder="عدد القطع">
+                    </div>
+                </div>
+                
+                <button class="btn" onclick="addPiece()">➕ إضافة قطعة إلى القائمة</button>
+                
+                <div class="form-group" style="margin-top: 15px;">
+                    <label>📋 القطع المطلوبة:</label>
+                    <div class="pieces-list" id="piecesList">
+                        <p style="text-align:center;color:#718096;padding:20px;font-style:italic">لا توجد قطع مضافة بعد</p>
+                    </div>
+                </div>
+                
+                <div class="buttons-group">
+                    <button class="btn" onclick="calculateOptimizedCutting()">🧮 الحساب المتقدم</button>
+                    <button class="btn btn-danger" onclick="clearAll()">🗑️ مسح الكل</button>
+                </div>
+            </div>
+            
+            <div class="results-section" id="resultsSection">
+                <h2 style="text-align:center;margin-bottom:20px;color:#2d3748;" id="resultsTitle">نتائج التقطيع الأمثل</h2>
+                <div id="resultsContainer"></div>
+                <div class="summary" id="summary"></div>
+            </div>
+        </div>
+
+        <!-- الفوتر المصغر -->
+        <footer>
+            <div class="footer-content">
+                <div class="designer-info">
+                    👨‍💻 تصميم: أحمد قطيع
+                </div>
+                
+                <div class="footer-divider"></div>
+                
+                <a href="https://wa.me/963993511250" class="contact-button" target="_blank">
+                    💬 واتساب
+                    <span style="font-size:10px;opacity:0.9">+963993511250</span>
+                </a>
+                
+                <div class="copyright">
+                    © 2024 ورشة التعاون للألمنيوم والفايبر
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // 🧮 النظام الأساسي
+        let pieces = [];
+        
+        function addPiece() {
+            const length = parseInt(document.getElementById('pieceLength').value);
+            const width = parseInt(document.getElementById('pieceWidth').value);
+            const quantity = parseInt(document.getElementById('pieceQuantity').value);
+            
+            if (!length || length < 1 || !width || width < 1) {
+                alert('الرجاء إدخال أبعاد صحيحة للقطعة');
+                return;
+            }
+            
+            for (let i = 0; i < quantity; i++) {
+                pieces.push({length, width});
+            }
+            
+            updatePiecesList();
+            document.getElementById('pieceLength').value = '';
+            document.getElementById('pieceWidth').value = '';
+            document.getElementById('pieceQuantity').value = 1;
+            saveData();
+        }
+        
+        function updatePiecesList() {
+            const list = document.getElementById('piecesList');
+            
+            if (pieces.length === 0) {
+                list.innerHTML = '<p style="text-align:center;color:#718096;padding:20px;font-style:italic">لا توجد قطع مضافة بعد</p>';
+                return;
+            }
+            
+            // تجميع القطع المتشابهة للعرض
+            const grouped = {};
+            pieces.forEach(piece => {
+                const key = `${piece.length}x${piece.width}`;
+                if (!grouped[key]) {
+                    grouped[key] = {
+                        length: piece.length,
+                        width: piece.width,
+                        count: 0
+                    };
+                }
+                grouped[key].count++;
+            });
+            
+            let html = '';
+            Object.values(grouped).sort((a, b) => (b.length * b.width) - (a.length * a.width)).forEach(item => {
+                html += `<div class="piece-item">
+                    <span>${item.count} قطعة × ${item.length}سم × ${item.width}سم</span>
+                    <button class="btn btn-danger" style="padding:6px 12px;font-size:11px" 
+                            onclick="removePiece(${item.length}, ${item.width})">✕ حذف</button>
+                </div>`;
+            });
+            
+            list.innerHTML = html;
+        }
+        
+        function removePiece(length, width) {
+            const index = pieces.findIndex(p => p.length === length && p.width === width);
+            if (index !== -1) {
+                pieces.splice(index, 1);
+                updatePiecesList();
+                saveData();
+            }
+        }
+        
+        function clearAll() {
+            pieces = [];
+            updatePiecesList();
+            document.getElementById('resultsSection').style.display = 'none';
+            saveData();
+        }
+        
+        // 🧠 خوارزمية التقطيع ثنائية الأبعاد
+        function optimizedSheetCutting(pieces, sheetLength, sheetWidth) {
+            // نسخ القطع وترتيبها تنازلياً حسب المساحة
+            const sortedPieces = [...pieces].sort((a, b) => (b.length * b.width) - (a.length * a.width));
+            const sheets = [];
+            
+            // دالة للتحقق مما إذا كانت القطعة تتسع في موقع معين من اللوح
+            function canPlace(sheet, x, y, pieceLength, pieceWidth) {
+                // التحقق من حدود اللوح
+                if (x + pieceLength > sheetLength || y + pieceWidth > sheetWidth) {
+                    return false;
+                }
+                
+                // التحقق من التداخل مع القطع الأخرى
+                for (const placedPiece of sheet.pieces) {
+                    if (!(x >= placedPiece.x + placedPiece.length || 
+                          x + pieceLength <= placedPiece.x ||
+                          y >= placedPiece.y + placedPiece.width ||
+                          y + pieceWidth <= placedPiece.y)) {
+                        return false;
+                    }
+                }
+                
+                return true;
+            }
+            
+            // دالة لإيجاد أفضل موقع للقطعة في اللوح
+            function findBestPlacement(sheet, pieceLength, pieceWidth) {
+                // محاولة كلا الاتجاهين (تدوير القطعة)
+                const orientations = [
+                    { length: pieceLength, width: pieceWidth },
+                    { length: pieceWidth, width: pieceLength }
+                ];
+                
+                for (const orientation of orientations) {
+                    for (let x = 0; x <= sheetLength - orientation.length; x++) {
+                        for (let y = 0; y <= sheetWidth - orientation.width; y++) {
+                            if (canPlace(sheet, x, y, orientation.length, orientation.width)) {
+                                return {
+                                    x, 
+                                    y, 
+                                    length: orientation.length, 
+                                    width: orientation.width,
+                                    rotated: orientation.length !== pieceLength
+                                };
+                            }
+                        }
+                    }
+                }
+                
+                return null;
+            }
+            
+            // معالجة كل قطعة
+            sortedPieces.forEach(piece => {
+                let placed = false;
+                
+                // البحث في الألواح الحالية
+                for (const sheet of sheets) {
+                    const placement = findBestPlacement(sheet, piece.length, piece.width);
+                    if (placement) {
+                        sheet.pieces.push({
+                            ...piece,
+                            ...placement
+                        });
+                        placed = true;
+                        break;
+                    }
+                }
+                
+                // إذا لم توضع في أي لوح موجود، إنشاء لوح جديد
+                if (!placed) {
+                    const newSheet = {
+                        pieces: []
+                    };
+                    const placement = findBestPlacement(newSheet, piece.length, piece.width);
+                    if (placement) {
+                        newSheet.pieces.push({
+                            ...piece,
+                            ...placement
+                        });
+                        sheets.push(newSheet);
+                    }
+                }
+            });
+            
+            // حساب المساحة المستخدمة والهدر لكل لوح
+            sheets.forEach(sheet => {
+                let usedArea = 0;
+                sheet.pieces.forEach(piece => {
+                    usedArea += piece.length * piece.width;
+                });
+                sheet.usedArea = usedArea;
+                sheet.totalArea = sheetLength * sheetWidth;
+                sheet.wasteArea = sheet.totalArea - usedArea;
+                sheet.efficiency = (usedArea / sheet.totalArea) * 100;
+            });
+            
+            return sheets;
+        }
+        
+        function calculateOptimizedCutting() {
+            if (pieces.length === 0) {
+                alert('الرجاء إضافة قطع أولاً');
+                return;
+            }
+            
+            const sheetLength = parseInt(document.getElementById('sheetLength').value);
+            const sheetWidth = parseInt(document.getElementById('sheetWidth').value);
+            
+            if (!sheetLength || sheetLength < 1 || !sheetWidth || sheetWidth < 1) {
+                alert('الرجاء إدخال أبعاد صحيحة للوح');
+                return;
+            }
+            
+            const results = optimizedSheetCutting(pieces, sheetLength, sheetWidth);
+            displayResults(results, sheetLength, sheetWidth);
+        }
+        
+        function displayResults(sheets, sheetLength, sheetWidth) {
+            const container = document.getElementById('resultsContainer');
+            const summary = document.getElementById('summary');
+            const title = document.getElementById('resultsTitle');
+            
+            title.textContent = `نتائج التقطيع الأمثل`;
+            
+            let html = '';
+            let totalWaste = 0;
+            let totalSheets = sheets.length;
+            let efficientSheets = 0;
+            let totalPiecesArea = 0;
+            
+            sheets.forEach((sheet, index) => {
+                totalWaste += sheet.wasteArea;
+                totalPiecesArea += sheet.usedArea;
+                
+                const isEfficient = sheet.efficiency >= 85;
+                if (isEfficient) efficientSheets++;
+                
+                html += `<div class="sheet-result">
+                    <div class="sheet-header">
+                        <div>
+                            <h3>اللوح ${index + 1}</h3>
+                            ${isEfficient ? '<span class="efficiency-badge">🔄 كفاءة عالية</span>' : ''}
+                        </div>
+                        <span>🟢 المستخدم: ${sheet.usedArea.toFixed(0)}سم² | 🔴 الهدر: ${sheet.wasteArea.toFixed(0)}سم²</span>
+                    </div>
+                    <div class="cuts-display">`;
+                
+                sheet.pieces.forEach((piece, pieceIndex) => {
+                    const rotationText = piece.rotated ? ' (مدور)' : '';
+                    html += `<div class="cut-piece">${piece.length}×${piece.width}سم${rotationText}</div>`;
+                });
+                
+                if (sheet.wasteArea > 0) {
+                    html += `<div class="cut-piece waste">هدر: ${sheet.wasteArea.toFixed(0)}سم²</div>`;
+                }
+                
+                // إضافة التمثيل البصري
+                html += `</div>
+                    <div class="sheet-visualization">
+                        <div class="sheet-base" id="sheet-${index}"></div>
+                    </div>
+                </div>`;
+            });
+            
+            container.innerHTML = html;
+            
+            // إضافة التمثيل البصري لكل لوح
+            sheets.forEach((sheet, index) => {
+                visualizeSheet(sheet, index, sheetLength, sheetWidth);
+            });
+            
+            const totalPieces = pieces.length;
+            const totalMaterialArea = sheetLength * sheetWidth * totalSheets;
+            const overallEfficiency = (totalPiecesArea / totalMaterialArea) * 100;
+            
+            summary.innerHTML = `
+                <h3>📊 ملخص النتائج</h3>
+                <p>📦 عدد الألواح المطلوبة: <strong>${totalSheets}</strong></p>
+                <p>✅ الألواح الفعالة (كفاءة ≥ 85%): <strong>${efficientSheets}</strong></p>
+                <p>✂️ إجمالي القطع: <strong>${totalPieces}</strong></p>
+                <p>📏 إجمالي الهدر: <strong>${totalWaste.toFixed(0)} سم²</strong></p>
+                <p>🎯 كفاءة الاستخدام الكلية: <strong>${overallEfficiency.toFixed(1)}%</strong></p>
+                <p style="margin-top: 10px; font-size: 0.9em; opacity: 0.9;">
+                    💡 يتم تدوير القطع تلقائياً لتحقيق أفضل استفادة من المساحة
+                </p>
+            `;
+            
+            document.getElementById('resultsSection').style.display = 'block';
+        }
+        
+        function visualizeSheet(sheet, index, sheetLength, sheetWidth) {
+            const container = document.getElementById(`sheet-${index}`);
+            if (!container) return;
+            
+            // تنظيف الحاوية
+            container.innerHTML = '';
+            
+            // إضافة القطع
+            sheet.pieces.forEach((piece, pieceIndex) => {
+                const scaleX = container.offsetWidth / sheetLength;
+                const scaleY = container.offsetHeight / sheetWidth;
+                
+                const rect = document.createElement('div');
+                rect.className = 'cut-rectangle';
+                rect.style.left = `${(piece.x / sheetLength) * 100}%`;
+                rect.style.top = `${(piece.y / sheetWidth) * 100}%`;
+                rect.style.width = `${(piece.length / sheetLength) * 100}%`;
+                rect.style.height = `${(piece.width / sheetWidth) * 100}%`;
+                rect.textContent = `${piece.length}×${piece.width}`;
+                rect.title = `القطعة ${pieceIndex + 1}: ${piece.length}سم × ${piece.width}سم ${piece.rotated ? '(مدورة)' : ''}`;
+                
+                container.appendChild(rect);
+            });
+            
+            // إضافة المناطق المهدرة (تبسيطية)
+            // في تطبيق حقيقي، ستحتاج إلى خوارزمية أكثر تعقيداً لحساب المناطق المهدرة
+        }
+        
+        // 💾 نظام الحفظ
+        function saveData() {
+            localStorage.setItem('fiberCutter_pieces', JSON.stringify(pieces));
+            localStorage.setItem('fiberCutter_sheetLength', document.getElementById('sheetLength').value);
+            localStorage.setItem('fiberCutter_sheetWidth', document.getElementById('sheetWidth').value);
+        }
+        
+        function loadData() {
+            const savedPieces = localStorage.getItem('fiberCutter_pieces');
+            const savedLength = localStorage.getItem('fiberCutter_sheetLength');
+            const savedWidth = localStorage.getItem('fiberCutter_sheetWidth');
+            
+            if (savedPieces) {
+                pieces = JSON.parse(savedPieces);
+                updatePiecesList();
+            }
+            
+            if (savedLength) {
+                document.getElementById('sheetLength').value = savedLength;
+            }
+            
+            if (savedWidth) {
+                document.getElementById('sheetWidth').value = savedWidth;
+            }
+        }
+        
+        // تحميل البيانات عند فتح الصفحة
+        window.onload = function() {
+            loadData();
+        };
+        
+        // حفظ البيانات عند إغلاق الصفحة
+        window.addEventListener('beforeunload', saveData);
+        
+        // حفظ البيانات عند تغيير أبعاد اللوح
+        document.getElementById('sheetLength').addEventListener('change', saveData);
+        document.getElementById('sheetWidth').addEventListener('change', saveData);
+    </script>
+</body>
+</html>
