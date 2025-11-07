@@ -6,6 +6,19 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📐</text></svg>">
     <title>حاسبة تقطيع ألواح الفايبر</title>
     <style>
+        :root {
+            --primary: #1a2a6c;
+            --primary-dark: #2a5298;
+            --secondary: #48bb78;
+            --danger: #ed64a6;
+            --dark: #2d3748;
+            --light: #f7fafc;
+            --gray: #718096;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+        }
+        
         * {
             box-sizing: border-box;
             margin: 0;
@@ -16,188 +29,173 @@
         body {
             background: linear-gradient(135deg, #1a2a6c 0%, #2a5298 100%);
             min-height: 100vh;
-            padding: 20px;
+            padding: 15px;
             color: #333;
-            position: relative;
-            overflow-x: hidden;
-        }
-        
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.15) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: -1;
+            line-height: 1.6;
         }
         
         .container {
-            max-width: 1100px;
+            max-width: 100%;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: var(--radius);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
             overflow: hidden;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
         header {
-            background: linear-gradient(135deg, #1a2a6c 0%, #2a5298 100%);
-            color: white;
-            padding: 25px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            padding: 20px 15px;
             text-align: center;
             position: relative;
             overflow: hidden;
         }
         
-        header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-            transform: rotate(45deg);
-            animation: shine 3s infinite;
-        }
-        
-        @keyframes shine {
-            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-        }
-        
         h1 {
-            font-size: 2em;
-            margin-bottom: 10px;
+            font-size: 1.5rem;
+            margin-bottom: 8px;
             font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
         
         .subtitle {
             opacity: 0.95;
-            font-size: 1em;
+            font-size: 0.9rem;
             font-weight: 300;
         }
         
+        .app-switcher {
+            display: flex;
+            justify-content: center;
+            margin: 15px 0;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .app-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+            flex: 1;
+            text-align: center;
+            max-width: 160px;
+        }
+        
+        .app-btn:hover, .app-btn.active {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(26, 42, 108, 0.3);
+        }
+        
+        .app-btn.active {
+            background: linear-gradient(135deg, var(--secondary) 0%, #38a169 100%);
+        }
+        
         .main-content {
-            padding: 25px;
+            padding: 20px 15px;
         }
         
-        .panel {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        .card {
+            background: var(--white);
             padding: 20px;
-            border-radius: 15px;
+            border-radius: var(--radius);
             margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
         
-        .panel-title {
-            font-size: 1.2em;
+        .card-title {
+            font-size: 1.1rem;
             font-weight: 700;
-            color: #2d3748;
+            color: var(--dark);
             margin-bottom: 15px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
         
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 18px;
         }
         
         .form-row {
             display: flex;
+            flex-direction: column;
             gap: 15px;
             margin-bottom: 15px;
         }
         
-        .form-row .form-group {
-            flex: 1;
-            margin-bottom: 0;
-        }
-        
         label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-weight: 600;
-            color: #2d3748;
-            font-size: 0.9em;
+            color: var(--dark);
+            font-size: 0.95rem;
         }
         
         select, input {
             width: 100%;
-            padding: 12px;
+            padding: 12px 15px;
             border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 14px;
+            border-radius: 8px;
+            font-size: 16px;
             transition: all 0.3s ease;
-            background: white;
+            background: var(--white);
         }
         
         select:focus, input:focus {
             outline: none;
-            border-color: #1a2a6c;
+            border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(26, 42, 108, 0.1);
-            transform: translateY(-2px);
         }
         
         .btn {
-            background: linear-gradient(135deg, #1a2a6c 0%, #2a5298 100%);
-            color: white;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
             border: none;
-            padding: 14px 25px;
-            border-radius: 12px;
+            padding: 14px 20px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 1rem;
             font-weight: 600;
             transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            box-shadow: 0 4px 15px rgba(26, 42, 108, 0.3);
+            box-shadow: var(--shadow);
+            width: 100%;
+            margin-bottom: 10px;
         }
         
         .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(26, 42, 108, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(26, 42, 108, 0.3);
         }
         
         .btn-danger {
-            background: linear-gradient(135deg, #ed64a6 0%, #ed8936 100%);
-            box-shadow: 0 4px 15px rgba(237, 100, 166, 0.3);
-        }
-        
-        .btn-danger:hover {
-            box-shadow: 0 8px 25px rgba(237, 100, 166, 0.4);
+            background: linear-gradient(135deg, var(--danger) 0%, #ed8936 100%);
         }
         
         .btn-success {
-            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-            box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
-        }
-        
-        .btn-success:hover {
-            box-shadow: 0 8px 25px rgba(72, 187, 120, 0.4);
+            background: linear-gradient(135deg, var(--secondary) 0%, #38a169 100%);
         }
         
         .pieces-list {
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 12px;
+            background: rgba(247, 250, 252, 0.8);
+            border-radius: 8px;
             padding: 15px;
             margin-top: 10px;
-            max-height: 250px;
+            max-height: 200px;
             overflow-y: auto;
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
         
         .piece-item {
@@ -211,94 +209,555 @@
         
         .piece-item:hover {
             background: rgba(26, 42, 108, 0.05);
-            border-radius: 8px;
+            border-radius: 6px;
         }
         
         .piece-item:last-child {
             border-bottom: none;
         }
         
-        .results-section {
-            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        .piece-info {
+            font-size: 0.9rem;
+        }
+        
+        .remove-btn {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+        
+        .remove-btn:hover {
+            background: #d53f8c;
+        }
+        
+        /* أنماط محسنة للسحب والإفلات */
+        .workspace-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .pieces-palette {
+            background: rgba(247, 250, 252, 0.9);
+            border-radius: var(--radius);
+            padding: 15px;
+            border: 2px dashed #cbd5e0;
+        }
+        
+        .palette-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .palette-pieces {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            min-height: 80px;
+            padding: 10px;
+        }
+        
+        .palette-piece {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: grab;
+            user-select: none;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+            border: 2px solid transparent;
+        }
+        
+        .palette-piece:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(26, 42, 108, 0.3);
+        }
+        
+        .palette-piece:active {
+            cursor: grabbing;
+            transform: scale(0.95);
+        }
+        
+        .sheet-workspace {
+            background: white;
+            border-radius: var(--radius);
             padding: 20px;
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border: 2px solid #e2e8f0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .workspace-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .sheet-info-panel {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .sheet-info-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .sheet-info-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .sheet-info-label {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+        
+        .sheet-container-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .sheet-container {
+            position: relative;
+            border: 3px solid var(--primary);
+            background: repeating-linear-gradient(
+                0deg,
+                #f7fafc,
+                #f7fafc 5px,
+                #e2e8f0 5px,
+                #e2e8f0 10px
+            );
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .sheet-dimension-labels {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+        
+        .dimension-label {
+            position: absolute;
+            background: rgba(26, 42, 108, 0.9);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .dimension-label.length {
+            bottom: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .dimension-label.width {
+            right: -45px;
+            top: 50%;
+            transform: translateY(-50%) rotate(90deg);
+            transform-origin: center;
+        }
+        
+        .droppable-piece {
+            position: absolute;
+            border: 2px solid var(--primary);
+            background: rgba(26, 42, 108, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--primary);
+            cursor: move;
+            user-select: none;
+            transition: all 0.15s ease;
+            text-align: center;
+            overflow: hidden;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+        }
+        
+        .droppable-piece:hover {
+            background: rgba(26, 42, 108, 0.25);
+            z-index: 10;
+            border-width: 3px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .droppable-piece.dragging {
+            opacity: 0.95;
+            transform: scale(1.02);
+            z-index: 100;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            border-color: var(--secondary);
+        }
+        
+        .droppable-piece.overlap {
+            border-color: var(--danger);
+            background: rgba(237, 100, 166, 0.25);
+            animation: pulse-warning 0.5s ease-in-out;
+        }
+        
+        @keyframes pulse-warning {
+            0%, 100% { border-color: var(--danger); }
+            50% { border-color: #ff6b6b; }
+        }
+        
+        .piece-actions {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            display: flex;
+            gap: 3px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        
+        .droppable-piece:hover .piece-actions {
+            opacity: 1;
+        }
+        
+        .piece-action-btn {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            width: 24px;
+            height: 24px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .piece-action-btn:hover {
+            transform: scale(1.15);
+        }
+        
+        .piece-action-btn.delete {
+            color: var(--danger);
+        }
+        
+        .piece-action-btn.delete:hover {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .workspace-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .workspace-controls .btn {
+            width: auto;
+            flex: 1;
+            max-width: 200px;
+            min-width: 140px;
+        }
+        
+        .workspace-stats {
+            background: rgba(247, 250, 252, 0.9);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .stat-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .stat-value {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+        
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px);
+            background-size: 10px 10px;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+        
+        .grain-direction {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            pointer-events: none;
+            z-index: 5;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .precision-controls {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .precision-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+        }
+
+        .precision-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .precision-display {
+            font-size: 0.8rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        /* باقي الأنماط السابقة محفوظة */
+        .results-section {
             display: none;
+            margin-top: 20px;
+        }
+        
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            width: 95%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            z-index: 1001;
+            animation: modalAppear 0.3s ease-out;
+        }
+        
+        @keyframes modalAppear {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -40%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 20px;
+            border-radius: var(--radius) var(--radius) 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+        
+        .close-modal:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .modal-body {
+            padding: 20px;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            padding: 15px 20px;
+            background: white;
+            border-radius: 0 0 var(--radius) var(--radius);
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .modal-actions .btn {
+            flex: 1;
+            margin: 0;
+        }
+        
+        .results-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: var(--shadow);
+            margin-bottom: 15px;
         }
         
         .sheet-result {
             background: rgba(255, 255, 255, 0.9);
             padding: 15px;
-            border-radius: 12px;
+            border-radius: 8px;
             margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.5);
-            transition: transform 0.3s ease;
-        }
-        
-        .sheet-result:hover {
-            transform: translateY(-2px);
         }
         
         .sheet-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             padding-bottom: 10px;
-            border-bottom: 2px solid #1a2a6c;
+            border-bottom: 2px solid var(--primary);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .sheet-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .sheet-stats {
+            font-size: 0.85rem;
+            color: var(--gray);
+            display: flex;
+            gap: 10px;
         }
         
         .cuts-display {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            margin-top: 10px;
+            margin-top: 12px;
         }
         
         .cut-piece {
-            background: linear-gradient(135deg, #1a2a6c 0%, #2a5298 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
             padding: 8px 12px;
             border-radius: 20px;
             font-weight: 600;
-            font-size: 0.85em;
-            box-shadow: 0 2px 8px rgba(26, 42, 108, 0.3);
+            font-size: 0.8rem;
+            box-shadow: 0 2px 4px rgba(26, 42, 108, 0.3);
         }
         
-        .waste {
-            background: linear-gradient(135deg, #ed64a6 0%, #ed8936 100%);
+        .waste-piece {
+            background: linear-gradient(135deg, var(--danger) 0%, #ed8936 100%);
         }
         
-        .efficient {
-            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-        }
-        
-        .summary {
-            background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+        .efficient-badge {
+            background: linear-gradient(135deg, var(--secondary) 0%, #38a169 100%);
             color: white;
-            padding: 20px;
-            border-radius: 15px;
-            margin-top: 20px;
-            text-align: center;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-        }
-        
-        .buttons-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        
-        .efficiency-badge {
-            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
             font-weight: 600;
-            box-shadow: 0 2px 8px rgba(72, 187, 120, 0.3);
+            margin-right: 8px;
         }
         
         .sheet-visualization {
@@ -308,42 +767,83 @@
             overflow: hidden;
             background: white;
             position: relative;
-            height: 200px;
+            height: 250px;
         }
         
         .sheet-base {
             width: 100%;
             height: 100%;
             position: relative;
-            background: #f7fafc;
+            background: repeating-linear-gradient(
+                0deg,
+                #f7fafc,
+                #f7fafc 5px,
+                #e2e8f0 5px,
+                #e2e8f0 10px
+            );
         }
         
         .cut-rectangle {
             position: absolute;
-            border: 2px solid #1a2a6c;
+            border: 2px solid var(--primary);
             background: rgba(26, 42, 108, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.7em;
+            font-size: 0.6rem;
             font-weight: 600;
-            color: #1a2a6c;
+            color: var(--primary);
             overflow: hidden;
+            text-align: center;
         }
         
-        .waste-area {
-            position: absolute;
-            border: 1px dashed #e53e3e;
-            background: rgba(229, 62, 62, 0.1);
+        .sheet-dimensions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 0.8rem;
+            color: var(--gray);
         }
         
-        /* تنسيقات الفوتر المصغر */
+        .sheet-orientation {
+            background: rgba(26, 42, 108, 0.1);
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-size: 0.8rem;
+            text-align: center;
+            border: 1px dashed var(--primary);
+        }
+        
+        .summary {
+            background: linear-gradient(135deg, var(--dark) 0%, #4a5568 100%);
+            color: white;
+            padding: 20px;
+            border-radius: var(--radius);
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+        
+        .summary h3 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .summary p {
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .summary strong {
+            color: #a0aec0;
+        }
+        
         footer {
-            background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+            background: linear-gradient(135deg, var(--dark) 0%, #4a5568 100%);
             color: white;
             padding: 15px;
             text-align: center;
-            margin-top: auto;
+            margin-top: 20px;
         }
         
         .footer-content {
@@ -354,7 +854,7 @@
         }
         
         .designer-info {
-            font-size: 13px;
+            font-size: 0.9rem;
             font-weight: 600;
             color: #e2e8f0;
         }
@@ -364,203 +864,320 @@
             color: white;
             text-decoration: none;
             padding: 8px 16px;
-            border-radius: 18px;
+            border-radius: 20px;
             font-weight: 600;
             display: inline-flex;
             align-items: center;
             gap: 6px;
             transition: all 0.3s ease;
-            box-shadow: 0 2px 10px rgba(37, 211, 102, 0.3);
-            font-size: 12px;
+            font-size: 0.85rem;
         }
         
         .contact-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+            box-shadow: 0 4px 8px rgba(37, 211, 102, 0.3);
         }
         
         .copyright {
-            font-size: 11px;
+            font-size: 0.75rem;
             opacity: 0.8;
             color: #cbd5e0;
-            line-height: 1.4;
         }
         
         .footer-divider {
-            width: 50%;
+            width: 80%;
             height: 1px;
-            background: linear-gradient(90deg, transparent, #1a2a6c, transparent);
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
             margin: 5px 0;
         }
         
-        .app-switcher {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-            gap: 10px;
-        }
-        
-        .app-btn {
-            padding: 10px 20px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        .app-btn.active {
-            background: rgba(255, 255, 255, 0.4);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-        
-        .app-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-        
         @media (max-width: 768px) {
+            .workspace-container {
+                flex-direction: column;
+            }
+            
+            .pieces-palette {
+                order: 2;
+            }
+            
+            .sheet-workspace {
+                order: 1;
+            }
+        }
+        
+        @media (min-width: 1200px) {
             .container {
-                margin: 10px;
+                max-width: 1400px;
             }
             
-            .form-row {
-                flex-direction: column;
-                gap: 10px;
+            .workspace-container {
+                flex-direction: row;
             }
             
-            .buttons-group {
-                flex-direction: column;
+            .pieces-palette {
+                flex: 0 0 300px;
             }
             
-            .footer-content {
-                gap: 8px;
-            }
-            
-            .designer-info {
-                font-size: 12px;
-            }
-            
-            .contact-button {
-                padding: 6px 12px;
-                font-size: 11px;
-            }
-            
-            .copyright {
-                font-size: 10px;
-            }
-            
-            h1 {
-                font-size: 1.6em;
-            }
-            
-            .main-content {
-                padding: 15px;
-            }
-            
-            .panel {
-                padding: 15px;
+            .sheet-workspace {
+                flex: 1;
             }
         }
     </style>
 </head>
 <body>
-    <div class="app-switcher">
-        <a href="https://ahmadqatea.github.io/aluminum_cutter/" class="app-btn">حاسبة الألمنيوم</a>
-        <a href="#" class="app-btn active">حاسبة الفايبر</a>
-    </div>
-
     <div class="container">
         <header>
             <h1>📐 حاسبة تقطيع ألواح الفايبر</h1>
             <p class="subtitle">نظام الحساب الذكي لتقطيع الألواح - أقل هدر، أعلى كفاءة</p>
         </header>
         
+        <div class="app-switcher">
+            <a href="https://ahmadqatea.github.io/aluminum_cutter/" class="app-btn">حاسبة الألمنيوم</a>
+            <a href="#" class="app-btn active">حاسبة الفايبر</a>
+        </div>
+        
         <div class="main-content">
-            <div class="panel">
-                <div class="panel-title">📏 مواصفات اللوح الأساسي</div>
+            <div class="card">
+                <div class="card-title">📏 مواصفات اللوح الأساسي</div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="sheetLength">طول اللوح (سم):</label>
-                        <input type="number" id="sheetLength" value="280" min="1">
+                        <label for="sheetLength">طول اللوح (سم) - الاتجاه الأفقي</label>
+                        <input type="number" id="sheetLength" value="280" min="1" step="0.1">
+                        <small style="color: var(--gray); font-size: 0.8rem; margin-top: 4px; display: block;">
+                            💡 اتجاه العروق الزينية يكون في هذا البعد (الاتجاه الأفقي)
+                        </small>
                     </div>
                     <div class="form-group">
-                        <label for="sheetWidth">عرض اللوح (سم):</label>
-                        <input type="number" id="sheetWidth" value="130" min="1">
+                        <label for="sheetWidth">عرض اللوح (سم) - الاتجاه العمودي</label>
+                        <input type="number" id="sheetWidth" value="130" min="1" step="0.1">
+                        <small style="color: var(--gray); font-size: 0.8rem; margin-top: 4px; display: block;">
+                            📐 البعد العمودي على اتجاه العروق
+                        </small>
+                    </div>
+                </div>
+                <div class="sheet-info-panel" style="margin-top: 15px;">
+                    <div class="sheet-info-item">
+                        <div class="sheet-info-value" id="totalSheetArea">36,400</div>
+                        <div class="sheet-info-label">سم² المساحة الكلية</div>
+                    </div>
+                    <div class="sheet-info-item">
+                        <div class="sheet-info-value">280 سم</div>
+                        <div class="sheet-info-label">الطول (أفقي)</div>
+                    </div>
+                    <div class="sheet-info-item">
+                        <div class="sheet-info-value">130 سم</div>
+                        <div class="sheet-info-label">العرض (عمودي)</div>
                     </div>
                 </div>
             </div>
             
-            <div class="panel">
-                <div class="panel-title">✂️ إضافة القطع المطلوبة</div>
+            <div class="card">
+                <div class="card-title">✂️ إضافة القطع المطلوبة</div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="pieceLength">طول القطعة (سم):</label>
-                        <input type="number" id="pieceLength" step="1" min="1" placeholder="أدخل الطول">
+                        <label for="pieceLength">طول القطعة (سم) - موازي لعرض اللوح (عمودي)</label>
+                        <input type="number" id="pieceLength" step="0.1" min="0.1" placeholder="أدخل الطول">
                     </div>
                     <div class="form-group">
-                        <label for="pieceWidth">عرض القطعة (سم):</label>
-                        <input type="number" id="pieceWidth" step="1" min="1" placeholder="أدخل العرض">
+                        <label for="pieceWidth">عرض القطعة (سم) - موازي لطول اللوح (أفقي)</label>
+                        <input type="number" id="pieceWidth" step="0.1" min="0.1" placeholder="أدخل العرض">
                     </div>
                     <div class="form-group">
-                        <label for="pieceQuantity">الكمية:</label>
+                        <label for="pieceQuantity">الكمية</label>
                         <input type="number" id="pieceQuantity" min="1" value="1" placeholder="عدد القطع">
                     </div>
                 </div>
                 
-                <button class="btn" onclick="addPiece()">➕ إضافة قطعة إلى القائمة</button>
+                <button class="btn" onclick="addPiece()">
+                    <span>➕</span>
+                    <span>إضافة قطعة إلى القائمة</span>
+                </button>
                 
                 <div class="form-group" style="margin-top: 15px;">
-                    <label>📋 القطع المطلوبة:</label>
+                    <label>📋 القطع المطلوبة</label>
                     <div class="pieces-list" id="piecesList">
                         <p style="text-align:center;color:#718096;padding:20px;font-style:italic">لا توجد قطع مضافة بعد</p>
                     </div>
                 </div>
                 
                 <div class="buttons-group">
-                    <button class="btn" onclick="calculateOptimizedCutting()">🧮 الحساب المتقدم</button>
-                    <button class="btn btn-danger" onclick="clearAll()">🗑️ مسح الكل</button>
+                    <button class="btn" onclick="calculateOptimizedCutting()">
+                        <span>🧮</span>
+                        <span>الحساب المتقدم</span>
+                    </button>
+                    <button class="btn btn-success" onclick="openWorkspace()">
+                        <span>🎨</span>
+                        <span>وضعية السحب والإفلات</span>
+                    </button>
+                    <button class="btn btn-danger" onclick="clearAll()">
+                        <span>🗑️</span>
+                        <span>مسح الكل</span>
+                    </button>
                 </div>
             </div>
-            
-            <div class="results-section" id="resultsSection">
-                <h2 style="text-align:center;margin-bottom:20px;color:#2d3748;" id="resultsTitle">نتائج التقطيع الأمثل</h2>
-                <div id="resultsContainer"></div>
-                <div class="summary" id="summary"></div>
+
+            <!-- مساحة العمل للسحب والإفلات -->
+            <div class="workspace-container" id="workspaceContainer" style="display: none;">
+                <div class="pieces-palette">
+                    <div class="palette-title">🧩 القطع المتاحة</div>
+                    <div class="palette-pieces" id="palettePieces">
+                        <!-- سيتم ملؤها بالقطع -->
+                    </div>
+                    <div style="text-align: center; margin-top: 10px; font-size: 0.8rem; color: var(--gray);">
+                        💡 اسحب القطعة إلى اللوح أو انقر عليها
+                    </div>
+                </div>
+                
+                <div class="sheet-workspace">
+                    <div class="workspace-title">📋 لوح التقطيع التفاعلي</div>
+                    
+                    <div class="sheet-info-panel">
+                        <div class="sheet-info-item">
+                            <div class="sheet-info-value" id="wsSheetLength">280</div>
+                            <div class="sheet-info-label">طول اللوح (سم) - أفقي</div>
+                        </div>
+                        <div class="sheet-info-item">
+                            <div class="sheet-info-value" id="wsSheetWidth">130</div>
+                            <div class="sheet-info-label">عرض اللوح (سم) - عمودي</div>
+                        </div>
+                        <div class="sheet-info-item">
+                            <div class="sheet-info-value" id="wsTotalArea">36,400</div>
+                            <div class="sheet-info-label">المساحة الكلية</div>
+                        </div>
+                    </div>
+
+                    <div class="precision-controls">
+                        <span class="precision-display">دقة التحريك: <span id="precisionValue">1</span> بكسل</span>
+                        <button class="precision-btn" onclick="changePrecision(0.5)">دقة عالية (0.5px)</button>
+                        <button class="precision-btn" onclick="changePrecision(1)">دقة متوسطة (1px)</button>
+                        <button class="precision-btn" onclick="changePrecision(2)">دقة منخفضة (2px)</button>
+                    </div>
+                    
+                    <div class="sheet-container-wrapper">
+                        <div class="sheet-container" id="sheetContainer">
+                            <!-- سيتم إضافة القطع هنا -->
+                            <div class="grain-direction">↔️ اتجاه العروق (أفقي)</div>
+                            <div class="grid-overlay"></div>
+                            <div class="sheet-dimension-labels">
+                                <div class="dimension-label length" id="lengthLabel">280 سم</div>
+                                <div class="dimension-label width" id="widthLabel">130 سم</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="workspace-stats">
+                        <div class="stats-grid" id="workspaceStats">
+                            <div class="stat-item">
+                                <div class="stat-value" id="usedArea">0</div>
+                                <div class="stat-label">سم² مستخدم</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="wasteArea">36,400</div>
+                                <div class="stat-label">سم² هدر</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="efficiency">0%</div>
+                                <div class="stat-label">كفاءة</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="piecesCount">0</div>
+                                <div class="stat-label">قطع مستخدمة</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="workspace-controls">
+                        <button class="btn" onclick="autoArrangePieces()">
+                            <span>🔧</span>
+                            <span>ترتيب تلقائي</span>
+                        </button>
+                        <button class="btn btn-success" onclick="saveWorkspace()">
+                            <span>💾</span>
+                            <span>حفظ التصميم</span>
+                        </button>
+                        <button class="btn btn-danger" onclick="clearWorkspace()">
+                            <span>🗑️</span>
+                            <span>مسح اللوح</span>
+                        </button>
+                        <button class="btn" onclick="closeWorkspace()">
+                            <span>←</span>
+                            <span>عودة</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- الفوتر المصغر -->
         <footer>
             <div class="footer-content">
-                <div class="designer-info">
-                    👨‍💻 تصميم: أحمد قطيع
-                </div>
-                
+                <div class="designer-info">👨‍💻 تصميم: أحمد قطيع</div>
                 <div class="footer-divider"></div>
-                
                 <a href="https://wa.me/963993511250" class="contact-button" target="_blank">
-                    💬 واتساب
-                    <span style="font-size:10px;opacity:0.9">+963993511250</span>
+                    <span>💬</span>
+                    <span>واتساب</span>
+                    <span style="font-size:0.7rem;opacity:0.9">+963993511250</span>
                 </a>
-                
-                <div class="copyright">
-                    © 2024 ورشة التعاون للألمنيوم والفايبر
-                </div>
+                <div class="copyright">© 2024 ورشة التعاون للألمنيوم والفايبر</div>
             </div>
         </footer>
+    </div>
+
+    <!-- نافذة النتائج المنبثقة -->
+    <div class="modal-overlay" id="resultsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">نتائج التقطيع الأمثل</h2>
+                <button class="close-modal" onclick="closeResultsModal()">✕</button>
+            </div>
+            <div class="modal-body" id="modalResultsContainer">
+                <!-- سيتم ملء المحتوى هنا -->
+            </div>
+            <div class="modal-actions">
+                <button class="btn" onclick="closeResultsModal()">
+                    <span>❌</span>
+                    <span>إغلاق</span>
+                </button>
+            </div>
+        </div>
     </div>
 
     <script>
         // 🧮 النظام الأساسي
         let pieces = [];
+        let isWorkspaceOpen = false;
+        let currentSheetLength = 280;
+        let currentSheetWidth = 130;
+        let dragPrecision = 1; // دقة التحريك بالبكسل
+        let availablePieces = []; // نسخة من القطع المتاحة للاستخدام في مساحة العمل
+        
+        // تحديث معلومات اللوح
+        function updateSheetInfo() {
+            const length = parseFloat(document.getElementById('sheetLength').value) || 280;
+            const width = parseFloat(document.getElementById('sheetWidth').value) || 130;
+            const totalArea = length * width;
+            
+            document.getElementById('totalSheetArea').textContent = formatNumber(totalArea);
+            document.getElementById('wsSheetLength').textContent = formatDecimal(length);
+            document.getElementById('wsSheetWidth').textContent = formatDecimal(width);
+            document.getElementById('wsTotalArea').textContent = formatNumber(totalArea);
+            
+            // تحديث التسميات
+            document.getElementById('lengthLabel').textContent = formatDecimal(length) + ' سم';
+            document.getElementById('widthLabel').textContent = formatDecimal(width) + ' سم';
+        }
+        
+        // تغيير دقة التحريك
+        function changePrecision(precision) {
+            dragPrecision = precision;
+            document.getElementById('precisionValue').textContent = precision;
+        }
         
         function addPiece() {
-            const length = parseInt(document.getElementById('pieceLength').value);
-            const width = parseInt(document.getElementById('pieceWidth').value);
+            const length = parseFloat(document.getElementById('pieceLength').value);
+            const width = parseFloat(document.getElementById('pieceWidth').value);
             const quantity = parseInt(document.getElementById('pieceQuantity').value);
             
-            if (!length || length < 1 || !width || width < 1) {
+            if (!length || length < 0.1 || !width || width < 0.1) {
                 alert('الرجاء إدخال أبعاد صحيحة للقطعة');
                 return;
             }
@@ -584,7 +1201,6 @@
                 return;
             }
             
-            // تجميع القطع المتشابهة للعرض
             const grouped = {};
             pieces.forEach(piece => {
                 const key = `${piece.length}x${piece.width}`;
@@ -601,9 +1217,8 @@
             let html = '';
             Object.values(grouped).sort((a, b) => (b.length * b.width) - (a.length * a.width)).forEach(item => {
                 html += `<div class="piece-item">
-                    <span>${item.count} قطعة × ${item.length}سم × ${item.width}سم</span>
-                    <button class="btn btn-danger" style="padding:6px 12px;font-size:11px" 
-                            onclick="removePiece(${item.length}, ${item.width})">✕ حذف</button>
+                    <span class="piece-info">${item.count} قطعة × ${formatDecimal(item.length)}سم × ${formatDecimal(item.width)}سم</span>
+                    <button class="remove-btn" onclick="removePiece('${item.length}', '${item.width}')">✕ حذف</button>
                 </div>`;
             });
             
@@ -611,7 +1226,7 @@
         }
         
         function removePiece(length, width) {
-            const index = pieces.findIndex(p => p.length === length && p.width === width);
+            const index = pieces.findIndex(p => p.length.toString() === length && p.width.toString() === width);
             if (index !== -1) {
                 pieces.splice(index, 1);
                 updatePiecesList();
@@ -622,135 +1237,553 @@
         function clearAll() {
             pieces = [];
             updatePiecesList();
-            document.getElementById('resultsSection').style.display = 'none';
             saveData();
         }
         
-        // 🧠 خوارزمية التقطيع ثنائية الأبعاد
+        // دالة لتنسيق الأرقام العشرية
+        function formatDecimal(num) {
+            return Number.isInteger(num) ? num.toString() : num.toFixed(1);
+        }
+        
+        // دالة لتنسيق الأرقام الكبيرة
+        function formatNumber(num) {
+            return num.toLocaleString('ar-EG');
+        }
+
+        // 🎨 نظام السحب والإفلات المحسن جداً
+        function openWorkspace() {
+            if (pieces.length === 0) {
+                alert('الرجاء إضافة قطع أولاً');
+                return;
+            }
+            
+            currentSheetLength = parseFloat(document.getElementById('sheetLength').value) || 280;
+            currentSheetWidth = parseFloat(document.getElementById('sheetWidth').value) || 130;
+            
+            document.getElementById('workspaceContainer').style.display = 'flex';
+            isWorkspaceOpen = true;
+            
+            updateSheetInfo();
+            initializeWorkspace();
+            updateWorkspaceStats();
+        }
+        
+        function closeWorkspace() {
+            document.getElementById('workspaceContainer').style.display = 'none';
+            isWorkspaceOpen = false;
+        }
+        
+        function initializeWorkspace() {
+            const palette = document.getElementById('palettePieces');
+            const sheetContainer = document.getElementById('sheetContainer');
+            
+            // تنظيف المساحة
+            palette.innerHTML = '';
+            sheetContainer.querySelectorAll('.droppable-piece').forEach(piece => piece.remove());
+            
+            // تعيين أبعاد اللوح - وضع أفقي (الطول أفقي والعرض عمودي)
+            const maxWidth = 800; // زيادة العرض للوضع الأفقي
+            const maxHeight = 500;
+            const scale = Math.min(maxWidth / currentSheetLength, maxHeight / currentSheetWidth);
+            
+            sheetContainer.style.width = `${currentSheetLength * scale}px`;
+            sheetContainer.style.height = `${currentSheetWidth * scale}px`;
+            
+            // إنشاء نسخة من القطع المتاحة
+            availablePieces = JSON.parse(JSON.stringify(pieces));
+            
+            // إنشاء قطع البليت
+            updatePalettePieces();
+            
+            // تحميل التصميم المحفوظ إن وجد
+            loadWorkspace();
+        }
+        
+        function updatePalettePieces() {
+            const palette = document.getElementById('palettePieces');
+            palette.innerHTML = '';
+            
+            const groupedPieces = {};
+            availablePieces.forEach(piece => {
+                const key = `${piece.length}x${piece.width}`;
+                if (!groupedPieces[key]) {
+                    groupedPieces[key] = {
+                        length: piece.length,
+                        width: piece.width,
+                        count: 0
+                    };
+                }
+                groupedPieces[key].count++;
+            });
+            
+            // إضافة القطع إلى البليت
+            Object.values(groupedPieces).forEach((piece, index) => {
+                const palettePiece = document.createElement('div');
+                palettePiece.className = 'palette-piece';
+                palettePiece.textContent = `${formatDecimal(piece.length)}×${formatDecimal(piece.width)} (${piece.count})`;
+                palettePiece.dataset.length = piece.length;
+                palettePiece.dataset.width = piece.width;
+                palettePiece.dataset.index = index;
+                palettePiece.draggable = true;
+                
+                palettePiece.addEventListener('dragstart', handleDragStart);
+                palettePiece.addEventListener('click', handlePaletteClick);
+                
+                palette.appendChild(palettePiece);
+            });
+        }
+        
+        function handleDragStart(e) {
+            const piece = e.target;
+            e.dataTransfer.setData('text/plain', JSON.stringify({
+                length: parseFloat(piece.dataset.length),
+                width: parseFloat(piece.dataset.width),
+                fromPalette: true
+            }));
+        }
+        
+        function handlePaletteClick(e) {
+            const piece = e.target;
+            const length = parseFloat(piece.dataset.length);
+            const width = parseFloat(piece.dataset.width);
+            
+            // إزالة القطعة من القطع المتاحة
+            const pieceIndex = availablePieces.findIndex(p => p.length === length && p.width === width);
+            if (pieceIndex !== -1) {
+                availablePieces.splice(pieceIndex, 1);
+                updatePalettePieces();
+                
+                // وضع القطعة في وسط اللوح
+                const sheetContainer = document.getElementById('sheetContainer');
+                const scale = getSheetScale();
+                const centerX = (sheetContainer.offsetWidth - (width * scale)) / 2;
+                const centerY = (sheetContainer.offsetHeight - (length * scale)) / 2;
+                
+                addPieceToSheet(length, width, centerX, centerY);
+            }
+        }
+        
+        function addPieceToSheet(length, width, x, y) {
+            const sheetContainer = document.getElementById('sheetContainer');
+            const scale = getSheetScale();
+            
+            const pieceElement = document.createElement('div');
+            pieceElement.className = 'droppable-piece';
+            pieceElement.style.width = `${width * scale}px`;  // العرض في الاتجاه الأفقي
+            pieceElement.style.height = `${length * scale}px`; // الطول في الاتجاه العمودي
+            pieceElement.style.left = `${x}px`;
+            pieceElement.style.top = `${y}px`;
+            pieceElement.textContent = `${formatDecimal(length)}×${formatDecimal(width)}`;
+            pieceElement.dataset.length = length;
+            pieceElement.dataset.width = width;
+            pieceElement.dataset.x = x;
+            pieceElement.dataset.y = y;
+            pieceElement.dataset.id = Date.now() + Math.random(); // معرف فريد للقطعة
+            
+            // إضافة أزرار التحكم
+            const actions = document.createElement('div');
+            actions.className = 'piece-actions';
+            
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'piece-action-btn delete';
+            deleteBtn.innerHTML = '✕';
+            deleteBtn.title = 'حذف القطعة وإعادتها للقائمة';
+            deleteBtn.onclick = (e) => {
+                e.stopPropagation();
+                removePieceFromSheet(pieceElement);
+            };
+            
+            actions.appendChild(deleteBtn);
+            pieceElement.appendChild(actions);
+            
+            // إضافة أحداث السحب عالية الدقة
+            makeHighPrecisionDraggable(pieceElement);
+            
+            sheetContainer.appendChild(pieceElement);
+            updateWorkspaceStats();
+        }
+        
+        function removePieceFromSheet(pieceElement) {
+            const length = parseFloat(pieceElement.dataset.length);
+            const width = parseFloat(pieceElement.dataset.width);
+            
+            // إعادة القطعة إلى القطع المتاحة
+            availablePieces.push({length, width});
+            updatePalettePieces();
+            
+            // إزالة العنصر من DOM
+            pieceElement.remove();
+            
+            // تحديث الإحصائيات
+            updateWorkspaceStats();
+        }
+        
+        function makeHighPrecisionDraggable(element) {
+            let isDragging = false;
+            let startX, startY, initialX, initialY;
+            
+            element.addEventListener('mousedown', startDrag);
+            
+            function startDrag(e) {
+                isDragging = true;
+                element.classList.add('dragging');
+                
+                startX = e.clientX;
+                startY = e.clientY;
+                initialX = element.offsetLeft;
+                initialY = element.offsetTop;
+                
+                // استخدام requestAnimationFrame لتحريك سلس
+                document.addEventListener('mousemove', drag);
+                document.addEventListener('mouseup', stopDrag);
+                
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            function drag(e) {
+                if (!isDragging) return;
+                
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+                
+                let newX = initialX + dx;
+                let newY = initialY + dy;
+                
+                // تطبيق الدقة المحددة
+                newX = Math.round(newX / dragPrecision) * dragPrecision;
+                newY = Math.round(newY / dragPrecision) * dragPrecision;
+                
+                // التحقق من الحدود بدقة
+                const sheetContainer = document.getElementById('sheetContainer');
+                const maxX = sheetContainer.offsetWidth - element.offsetWidth;
+                const maxY = sheetContainer.offsetHeight - element.offsetHeight;
+                
+                newX = Math.max(0, Math.min(newX, maxX));
+                newY = Math.max(0, Math.min(newY, maxY));
+                
+                // تطبيق التغييرات مباشرة
+                element.style.left = newX + "px";
+                element.style.top = newY + "px";
+                
+                // تحديث البيانات
+                element.dataset.x = newX;
+                element.dataset.y = newY;
+                
+                // التحقق من التداخل
+                checkOverlap(element);
+            }
+            
+            function stopDrag() {
+                isDragging = false;
+                element.classList.remove('dragging');
+                
+                document.removeEventListener('mousemove', drag);
+                document.removeEventListener('mouseup', stopDrag);
+                
+                updateWorkspaceStats();
+                saveWorkspaceAuto();
+            }
+        }
+        
+        function checkOverlap(element) {
+            const allPieces = document.querySelectorAll('.droppable-piece');
+            let hasOverlap = false;
+            
+            const rect1 = {
+                left: element.offsetLeft,
+                right: element.offsetLeft + element.offsetWidth,
+                top: element.offsetTop,
+                bottom: element.offsetTop + element.offsetHeight
+            };
+            
+            allPieces.forEach(otherPiece => {
+                if (otherPiece !== element && !otherPiece.classList.contains('dragging')) {
+                    const rect2 = {
+                        left: otherPiece.offsetLeft,
+                        right: otherPiece.offsetLeft + otherPiece.offsetWidth,
+                        top: otherPiece.offsetTop,
+                        bottom: otherPiece.offsetTop + otherPiece.offsetHeight
+                    };
+                    
+                    if (!(rect1.right < rect2.left || 
+                          rect1.left > rect2.right || 
+                          rect1.bottom < rect2.top || 
+                          rect1.top > rect2.bottom)) {
+                        hasOverlap = true;
+                    }
+                }
+            });
+            
+            if (hasOverlap) {
+                element.classList.add('overlap');
+            } else {
+                element.classList.remove('overlap');
+            }
+        }
+        
+        function getSheetScale() {
+            const sheetContainer = document.getElementById('sheetContainer');
+            return sheetContainer.offsetWidth / currentSheetLength;
+        }
+        
+        function updateWorkspaceStats() {
+            const pieces = document.querySelectorAll('.droppable-piece');
+            let totalUsedArea = 0;
+            
+            pieces.forEach(piece => {
+                const length = parseFloat(piece.dataset.length);
+                const width = parseFloat(piece.dataset.width);
+                totalUsedArea += length * width;
+            });
+            
+            const totalSheetArea = currentSheetLength * currentSheetWidth;
+            const wasteArea = totalSheetArea - totalUsedArea;
+            const efficiency = totalSheetArea > 0 ? (totalUsedArea / totalSheetArea) * 100 : 0;
+            
+            document.getElementById('usedArea').textContent = formatNumber(totalUsedArea);
+            document.getElementById('wasteArea').textContent = formatNumber(wasteArea);
+            document.getElementById('efficiency').textContent = efficiency.toFixed(1) + '%';
+            document.getElementById('piecesCount').textContent = pieces.length;
+        }
+        
+        function autoArrangePieces() {
+            clearWorkspace();
+            const results = optimizedSheetCutting(pieces, currentSheetLength, currentSheetWidth);
+            
+            if (results.length > 0) {
+                const sheet = results[0];
+                const scale = getSheetScale();
+                
+                sheet.pieces.forEach(piece => {
+                    const x = piece.x * scale;
+                    const y = piece.y * scale;
+                    addPieceToSheet(piece.length, piece.width, x, y);
+                });
+            }
+            
+            updateWorkspaceStats();
+        }
+        
+        function saveWorkspace() {
+            const piecesData = [];
+            document.querySelectorAll('.droppable-piece').forEach(piece => {
+                piecesData.push({
+                    length: parseFloat(piece.dataset.length),
+                    width: parseFloat(piece.dataset.width),
+                    x: parseInt(piece.dataset.x),
+                    y: parseInt(piece.dataset.y)
+                });
+            });
+            
+            localStorage.setItem('fiberCutter_workspace', JSON.stringify({
+                pieces: piecesData,
+                sheetLength: currentSheetLength,
+                sheetWidth: currentSheetWidth
+            }));
+            
+            alert('تم حفظ التصميم بنجاح!');
+        }
+        
+        function saveWorkspaceAuto() {
+            // حفظ تلقائي بدون إشعار
+            const piecesData = [];
+            document.querySelectorAll('.droppable-piece').forEach(piece => {
+                piecesData.push({
+                    length: parseFloat(piece.dataset.length),
+                    width: parseFloat(piece.dataset.width),
+                    x: parseInt(piece.dataset.x),
+                    y: parseInt(piece.dataset.y)
+                });
+            });
+            
+            localStorage.setItem('fiberCutter_workspace', JSON.stringify({
+                pieces: piecesData,
+                sheetLength: currentSheetLength,
+                sheetWidth: currentSheetWidth
+            }));
+        }
+        
+        function loadWorkspace() {
+            const saved = localStorage.getItem('fiberCutter_workspace');
+            if (saved) {
+                const data = JSON.parse(saved);
+                
+                if (data.sheetLength === currentSheetLength && data.sheetWidth === currentSheetWidth) {
+                    data.pieces.forEach(piece => {
+                        addPieceToSheet(piece.length, piece.width, piece.x, piece.y);
+                    });
+                }
+            }
+        }
+        
+        function clearWorkspace() {
+            document.querySelectorAll('.droppable-piece').forEach(piece => piece.remove());
+            // إعادة جميع القطع إلى المتاحة
+            availablePieces = JSON.parse(JSON.stringify(pieces));
+            updatePalettePieces();
+            updateWorkspaceStats();
+        }
+
+        // جعل حاوية اللوح قابلة للسحب والإفلات
+        document.addEventListener('DOMContentLoaded', function() {
+            const sheetContainer = document.getElementById('sheetContainer');
+            
+            sheetContainer.addEventListener('dragover', function(e) {
+                e.preventDefault();
+            });
+            
+            sheetContainer.addEventListener('drop', function(e) {
+                e.preventDefault();
+                const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+                
+                if (data.fromPalette) {
+                    const rect = sheetContainer.getBoundingClientRect();
+                    const scale = getSheetScale();
+                    const x = e.clientX - rect.left - (data.width * scale) / 2;
+                    const y = e.clientY - rect.top - (data.length * scale) / 2;
+                    
+                    addPieceToSheet(data.length, data.width, x, y);
+                }
+            });
+            
+            // تحديث معلومات اللوح عند تغيير القيم
+            document.getElementById('sheetLength').addEventListener('input', updateSheetInfo);
+            document.getElementById('sheetWidth').addEventListener('input', updateSheetInfo);
+            
+            // التهيئة الأولية
+            updateSheetInfo();
+        });
+
+        // 🧠 خوارزمية التقطيع المحسنة
         function optimizedSheetCutting(pieces, sheetLength, sheetWidth) {
-            // نسخ القطع وترتيبها تنازلياً حسب المساحة
+            if (pieces.length === 0) return [];
+
             const sortedPieces = [...pieces].sort((a, b) => (b.length * b.width) - (a.length * a.width));
             const sheets = [];
             
-            // دالة للتحقق مما إذا كانت القطعة تتسع في موقع معين من اللوح
-            function canPlace(sheet, x, y, pieceLength, pieceWidth) {
-                // التحقق من حدود اللوح
-                if (x + pieceLength > sheetLength || y + pieceWidth > sheetWidth) {
-                    return false;
-                }
-                
-                // التحقق من التداخل مع القطع الأخرى
-                for (const placedPiece of sheet.pieces) {
-                    if (!(x >= placedPiece.x + placedPiece.length || 
-                          x + pieceLength <= placedPiece.x ||
-                          y >= placedPiece.y + placedPiece.width ||
-                          y + pieceWidth <= placedPiece.y)) {
-                        return false;
-                    }
-                }
-                
-                return true;
+            function createNewSheet() {
+                return {
+                    pieces: [],
+                    levels: [],
+                    usedArea: 0,
+                    totalArea: sheetLength * sheetWidth,
+                    wasteArea: sheetLength * sheetWidth
+                };
             }
             
-            // دالة لإيجاد أفضل موقع للقطعة في اللوح
-            function findBestPlacement(sheet, pieceLength, pieceWidth) {
-                // محاولة كلا الاتجاهين (تدوير القطعة)
-                const orientations = [
-                    { length: pieceLength, width: pieceWidth },
-                    { length: pieceWidth, width: pieceLength }
-                ];
+            sortedPieces.forEach(piece => {
+                let placed = false;
                 
-                for (const orientation of orientations) {
-                    for (let x = 0; x <= sheetLength - orientation.length; x++) {
-                        for (let y = 0; y <= sheetWidth - orientation.width; y++) {
-                            if (canPlace(sheet, x, y, orientation.length, orientation.width)) {
-                                return {
-                                    x, 
-                                    y, 
-                                    length: orientation.length, 
-                                    width: orientation.width,
-                                    rotated: orientation.length !== pieceLength
-                                };
-                            }
+                for (const sheet of sheets) {
+                    let bestLevel = null;
+                    let bestX = 0;
+                    
+                    for (const level of sheet.levels) {
+                        const remainingWidth = sheetLength - level.usedWidth;
+                        if (piece.width <= remainingWidth && piece.length <= level.height) {
+                            bestLevel = level;
+                            bestX = level.usedWidth;
+                            break;
+                        }
+                    }
+                    
+                    if (bestLevel) {
+                        const placedPiece = {
+                            ...piece,
+                            x: bestX,
+                            y: bestLevel.y,
+                            length: piece.length,
+                            width: piece.width
+                        };
+                        
+                        sheet.pieces.push(placedPiece);
+                        bestLevel.usedWidth += piece.width;
+                        sheet.usedArea += piece.length * piece.width;
+                        placed = true;
+                        break;
+                    } else {
+                        const usedHeight = sheet.levels.reduce((sum, level) => sum + level.height, 0);
+                        const remainingHeight = sheetWidth - usedHeight;
+                        
+                        if (piece.length <= remainingHeight) {
+                            const newLevel = {
+                                y: usedHeight,
+                                height: piece.length,
+                                usedWidth: piece.width,
+                                pieces: []
+                            };
+                            
+                            const placedPiece = {
+                                ...piece,
+                                x: 0,
+                                y: usedHeight,
+                                length: piece.length,
+                                width: piece.width
+                            };
+                            
+                            newLevel.pieces.push(placedPiece);
+                            sheet.levels.push(newLevel);
+                            sheet.pieces.push(placedPiece);
+                            sheet.usedArea += piece.length * piece.width;
+                            placed = true;
+                            break;
                         }
                     }
                 }
                 
-                return null;
-            }
-            
-            // معالجة كل قطعة
-            sortedPieces.forEach(piece => {
-                let placed = false;
-                
-                // البحث في الألواح الحالية
-                for (const sheet of sheets) {
-                    const placement = findBestPlacement(sheet, piece.length, piece.width);
-                    if (placement) {
-                        sheet.pieces.push({
-                            ...piece,
-                            ...placement
-                        });
-                        placed = true;
-                        break;
-                    }
-                }
-                
-                // إذا لم توضع في أي لوح موجود، إنشاء لوح جديد
                 if (!placed) {
-                    const newSheet = {
-                        pieces: []
-                    };
-                    const placement = findBestPlacement(newSheet, piece.length, piece.width);
-                    if (placement) {
-                        newSheet.pieces.push({
+                    const newSheet = createNewSheet();
+                    
+                    if (piece.length <= sheetWidth) {
+                        const newLevel = {
+                            y: 0,
+                            height: piece.length,
+                            usedWidth: piece.width,
+                            pieces: []
+                        };
+                        
+                        const placedPiece = {
                             ...piece,
-                            ...placement
-                        });
+                            x: 0,
+                            y: 0,
+                            length: piece.length,
+                            width: piece.width
+                        };
+                        
+                        newLevel.pieces.push(placedPiece);
+                        newSheet.levels.push(newLevel);
+                        newSheet.pieces.push(placedPiece);
+                        newSheet.usedArea += piece.length * piece.width;
                         sheets.push(newSheet);
                     }
                 }
             });
             
-            // حساب المساحة المستخدمة والهدر لكل لوح
             sheets.forEach(sheet => {
-                let usedArea = 0;
-                sheet.pieces.forEach(piece => {
-                    usedArea += piece.length * piece.width;
-                });
-                sheet.usedArea = usedArea;
-                sheet.totalArea = sheetLength * sheetWidth;
-                sheet.wasteArea = sheet.totalArea - usedArea;
-                sheet.efficiency = (usedArea / sheet.totalArea) * 100;
+                sheet.wasteArea = sheet.totalArea - sheet.usedArea;
+                sheet.efficiency = (sheet.usedArea / sheet.totalArea) * 100;
             });
             
             return sheets;
         }
         
+        // باقي الدوال محفوظة
         function calculateOptimizedCutting() {
             if (pieces.length === 0) {
                 alert('الرجاء إضافة قطع أولاً');
                 return;
             }
             
-            const sheetLength = parseInt(document.getElementById('sheetLength').value);
-            const sheetWidth = parseInt(document.getElementById('sheetWidth').value);
-            
-            if (!sheetLength || sheetLength < 1 || !sheetWidth || sheetWidth < 1) {
-                alert('الرجاء إدخال أبعاد صحيحة للوح');
-                return;
-            }
+            const sheetLength = parseFloat(document.getElementById('sheetLength').value) || 280;
+            const sheetWidth = parseFloat(document.getElementById('sheetWidth').value) || 130;
             
             const results = optimizedSheetCutting(pieces, sheetLength, sheetWidth);
-            displayResults(results, sheetLength, sheetWidth);
+            displayResultsInModal(results, sheetLength, sheetWidth);
         }
         
-        function displayResults(sheets, sheetLength, sheetWidth) {
-            const container = document.getElementById('resultsContainer');
-            const summary = document.getElementById('summary');
-            const title = document.getElementById('resultsTitle');
-            
-            title.textContent = `نتائج التقطيع الأمثل`;
+        function displayResultsInModal(sheets, sheetLength, sheetWidth) {
+            const container = document.getElementById('modalResultsContainer');
             
             let html = '';
             let totalWaste = 0;
@@ -768,82 +1801,87 @@
                 html += `<div class="sheet-result">
                     <div class="sheet-header">
                         <div>
-                            <h3>اللوح ${index + 1}</h3>
-                            ${isEfficient ? '<span class="efficiency-badge">🔄 كفاءة عالية</span>' : ''}
+                            <span class="sheet-title">اللوح ${index + 1}</span>
+                            ${isEfficient ? '<span class="efficient-badge">كفاءة عالية</span>' : ''}
                         </div>
-                        <span>🟢 المستخدم: ${sheet.usedArea.toFixed(0)}سم² | 🔴 الهدر: ${sheet.wasteArea.toFixed(0)}سم²</span>
+                        <div class="sheet-stats">
+                            <span>🟢 ${formatNumber(sheet.usedArea)}سم²</span>
+                            <span>🔴 ${formatNumber(sheet.wasteArea)}سم²</span>
+                            <span>🎯 ${sheet.efficiency.toFixed(1)}%</span>
+                        </div>
                     </div>
                     <div class="cuts-display">`;
                 
                 sheet.pieces.forEach((piece, pieceIndex) => {
-                    const rotationText = piece.rotated ? ' (مدور)' : '';
-                    html += `<div class="cut-piece">${piece.length}×${piece.width}سم${rotationText}</div>`;
+                    html += `<div class="cut-piece" title="الموقع: ${formatDecimal(piece.x)}×${formatDecimal(piece.y)}">
+                        ${formatDecimal(piece.length)}×${formatDecimal(piece.width)}سم
+                    </div>`;
                 });
                 
                 if (sheet.wasteArea > 0) {
-                    html += `<div class="cut-piece waste">هدر: ${sheet.wasteArea.toFixed(0)}سم²</div>`;
+                    html += `<div class="cut-piece waste-piece">هدر: ${formatNumber(sheet.wasteArea)}سم²</div>`;
                 }
                 
-                // إضافة التمثيل البصري
                 html += `</div>
                     <div class="sheet-visualization">
-                        <div class="sheet-base" id="sheet-${index}"></div>
+                        <div class="sheet-base" id="modal-sheet-${index}"></div>
+                    </div>
+                    <div class="sheet-dimensions">
+                        <span>طول اللوح: ${formatDecimal(sheetLength)} سم (أفقي)</span>
+                        <span>عرض اللوح: ${formatDecimal(sheetWidth)} سم (عمودي)</span>
                     </div>
                 </div>`;
             });
             
-            container.innerHTML = html;
-            
-            // إضافة التمثيل البصري لكل لوح
-            sheets.forEach((sheet, index) => {
-                visualizeSheet(sheet, index, sheetLength, sheetWidth);
-            });
-            
             const totalPieces = pieces.length;
             const totalMaterialArea = sheetLength * sheetWidth * totalSheets;
-            const overallEfficiency = (totalPiecesArea / totalMaterialArea) * 100;
+            const overallEfficiency = totalMaterialArea > 0 ? (totalPiecesArea / totalMaterialArea) * 100 : 0;
             
-            summary.innerHTML = `
+            html += `<div class="summary">
                 <h3>📊 ملخص النتائج</h3>
                 <p>📦 عدد الألواح المطلوبة: <strong>${totalSheets}</strong></p>
-                <p>✅ الألواح الفعالة (كفاءة ≥ 85%): <strong>${efficientSheets}</strong></p>
+                <p>✅ الألواح الفعالة: <strong>${efficientSheets}</strong></p>
                 <p>✂️ إجمالي القطع: <strong>${totalPieces}</strong></p>
-                <p>📏 إجمالي الهدر: <strong>${totalWaste.toFixed(0)} سم²</strong></p>
-                <p>🎯 كفاءة الاستخدام الكلية: <strong>${overallEfficiency.toFixed(1)}%</strong></p>
-                <p style="margin-top: 10px; font-size: 0.9em; opacity: 0.9;">
-                    💡 يتم تدوير القطع تلقائياً لتحقيق أفضل استفادة من المساحة
-                </p>
-            `;
+                <p>📏 إجمالي الهدر: <strong>${formatNumber(totalWaste)} سم²</strong></p>
+                <p>🎯 كفاءة الاستخدام: <strong>${overallEfficiency.toFixed(1)}%</strong></p>
+            </div>`;
             
-            document.getElementById('resultsSection').style.display = 'block';
+            container.innerHTML = html;
+            
+            sheets.forEach((sheet, index) => {
+                visualizeSheet(sheet, `modal-sheet-${index}`, sheetLength, sheetWidth);
+            });
+            
+            document.getElementById('resultsModal').style.display = 'block';
         }
         
-        function visualizeSheet(sheet, index, sheetLength, sheetWidth) {
-            const container = document.getElementById(`sheet-${index}`);
+        function visualizeSheet(sheet, containerId, sheetLength, sheetWidth) {
+            const container = document.getElementById(containerId);
             if (!container) return;
             
-            // تنظيف الحاوية
             container.innerHTML = '';
             
-            // إضافة القطع
             sheet.pieces.forEach((piece, pieceIndex) => {
-                const scaleX = container.offsetWidth / sheetLength;
-                const scaleY = container.offsetHeight / sheetWidth;
-                
                 const rect = document.createElement('div');
                 rect.className = 'cut-rectangle';
-                rect.style.left = `${(piece.x / sheetLength) * 100}%`;
-                rect.style.top = `${(piece.y / sheetWidth) * 100}%`;
-                rect.style.width = `${(piece.length / sheetLength) * 100}%`;
-                rect.style.height = `${(piece.width / sheetWidth) * 100}%`;
-                rect.textContent = `${piece.length}×${piece.width}`;
-                rect.title = `القطعة ${pieceIndex + 1}: ${piece.length}سم × ${piece.width}سم ${piece.rotated ? '(مدورة)' : ''}`;
+                
+                const left = (piece.x / sheetLength) * 100;
+                const top = (piece.y / sheetWidth) * 100;
+                const width = (piece.width / sheetLength) * 100;
+                const height = (piece.length / sheetWidth) * 100;
+                
+                rect.style.left = `${left}%`;
+                rect.style.top = `${top}%`;
+                rect.style.width = `${width}%`;
+                rect.style.height = `${height}%`;
+                rect.textContent = `${formatDecimal(piece.length)}×${formatDecimal(piece.width)}`;
                 
                 container.appendChild(rect);
             });
-            
-            // إضافة المناطق المهدرة (تبسيطية)
-            // في تطبيق حقيقي، ستحتاج إلى خوارزمية أكثر تعقيداً لحساب المناطق المهدرة
+        }
+        
+        function closeResultsModal() {
+            document.getElementById('resultsModal').style.display = 'none';
         }
         
         // 💾 نظام الحفظ
@@ -870,20 +1908,37 @@
             if (savedWidth) {
                 document.getElementById('sheetWidth').value = savedWidth;
             }
+            
+            updateSheetInfo();
         }
         
         // تحميل البيانات عند فتح الصفحة
-        window.onload = function() {
+        document.addEventListener('DOMContentLoaded', function() {
             loadData();
-        };
+        });
         
         // حفظ البيانات عند إغلاق الصفحة
         window.addEventListener('beforeunload', saveData);
         
-        // حفظ البيانات عند تغيير أبعاد اللوح
-        document.getElementById('sheetLength').addEventListener('change', saveData);
-        document.getElementById('sheetWidth').addEventListener('change', saveData);
+        // إغلاق النافذة المنبثقة عند النقر خارجها
+        document.getElementById('resultsModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeResultsModal();
+            }
+        });
+
+        // السماح بإدخال البيانات باستخدام زر Enter
+        document.getElementById('pieceLength').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addPiece();
+            }
+        });
+        
+        document.getElementById('pieceWidth').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addPiece();
+            }
+        });
     </script>
 </body>
 </html>
-
